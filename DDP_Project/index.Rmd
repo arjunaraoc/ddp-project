@@ -1,0 +1,52 @@
+---
+title       : Indian Railways Income Prediction
+subtitle    : DDP Project for Coursera Datascience Course
+author      : Arjuna Rao Chavala
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Project Overview
+
+1. Indian Railways is the biggest railway organisation in the world
+2. Lot of data is available from Indian Governement's Open Data platform
+3. Passenger trains and Goods trains are the major categories of traffic
+4. We investigate the contribution of each to the income of Indian Railways
+5. Provide a shiny app for users to experience the power of prediction
+
+--- .class #id 
+
+## Data at a glance
+```{r,echo=FALSE,results='hide'}
+library(ggplot2)
+library(gridExtra)
+library(reshape2)
+irfa<-read.csv("../data/Indian rail traffic net revenues.csv")
+irfamelt<-melt(irfa,id.vars=c("year"),measure.vars=c("psgr_trains","goods_trains"),variable.name="train_type",value.name="daily_average")
+
+p1<-ggplot(irfamelt)+aes(year,daily_average,fill=train_type)+geom_bar(stat="identity",position=position_dodge())
+p2<-ggplot(irfa)+aes(year,income)+geom_bar(stat="identity")
+grid.arrange(p1,p2,ncol=2)
+
+```
+
+--- .class #id
+
+
+## Prediction algorithm
+```{r,echo=FALSE}
+fit1<-lm(income~psgr_trains+goods_trains,data=irfa)
+summary(fit1)
+```
+
+--- .class #id
+
+## Shiny app UI
+![width](ind.png)
+
+
