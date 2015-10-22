@@ -1,0 +1,48 @@
+---
+title: "Initial Analysis"
+author: "Arjuna Rao C"
+date: "October 22, 2015"
+output: html_document
+---
+## Overview
+This document covers the initial data analysis
+
+## Download data
+```{r}
+if (!file.exists("../../data/traincount.csv")) { url1<-"https://data.gov.in/sites/default/files/datafile/67A_Railway_Key_Statistics_1950-51_to_2013-14.csv"
+download.file(url1,"../../data/traincount.csv",method="curl")
+}
+if (!file.exists("../../data/finance.csv")) {
+url2<-"https://data.gov.in/node/87960/datastore/export/csv"
+download.file(url2,"../../data/finance.csv",method="curl")
+}
+```
+## Read and restructure data
+```{r}
+tc<-read.csv("../../data/traincount.csv")
+# select data from 2006-07 till 2012-13 to match finace data
+tc<-tc[31:37,1:3]
+names(tc)<-c("year","psgr_trains","goods_trains")
+fp<-read.csv("../../data/finance.csv")
+fpn<-t(fp[,2:8])
+fpn<-as.data.frame(fpn)
+rh<-c("income","workexp","penfundexp","depresfundexp","expenses","net_revenue","dividend_payable","excess","opratio")
+names(fpn)<-rh
+irfa<-cbind(tc,fpn[,c(1,5,6,7)])
+write.csv(irfa,"../../data/Indian rail traffic net revenues.csv",quote=FALSE,row.names=FALSE)
+```
+
+## Exploratory Analysis
+```{r, echo=FALSE}
+irfa<-read.csv("../../data/Indian rail traffic net revenues.csv")
+summary(irfa)
+plot(irfa$psgr_trains,irfa$goods_trains,size=irfa$income)
+```
+
+## Regression fit
+```{r}
+fit1<-lm(income~psgr_trains+goods_trains,data=irfa)
+summary(fit1)
+par(mfrow=c(2,2))
+plot(fit1)
+```

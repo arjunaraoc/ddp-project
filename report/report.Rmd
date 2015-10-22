@@ -1,0 +1,30 @@
+---
+title: "Indian Railways Income Analysis"
+author: "Arjuna Rao C"
+date: "October 22, 2015"
+output: html_document
+---
+## Executive Summary
+TBD
+
+
+## Data
+
+![Income](../figures/IRIncome.png)
+
+```
+
+
+## Model
+```{r}
+irfa<-read.csv("../data/Indian rail traffic net revenues.csv")
+fit1<-lm(income~psgr_trains+goods_trains,data=irfa)
+summary(fit1)
+par(mfrow=c(2,2))
+plot(fit1)
+```
+
+## Shiny Application
+![UI](../DDP_Project/ind.png)
+
+## References
