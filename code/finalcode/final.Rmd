@@ -1,0 +1,28 @@
+---
+title: "Final Analysis and figure for document"
+author: "Arjuna Rao C"
+date: "October 22, 2015"
+output: html_document
+---
+## Overview
+This document covers the final data analysis
+
+
+## Plot income chart using ggplot
+```{r,results = 'asis', comment = NA, message = F, echo = F}
+library(ggplot2)
+irfa<-read.csv("../../data/Indian rail traffic net revenues.csv")
+g1<-ggplot(irfa,aes(psgr_trains,goods_trains))+geom_point(aes(size=income))
+g1<-g1 +xlab("Daily Average Passenger Trains")+ylab("Daily Average Goods Trains")
+g1<-g1+ggtitle("Indian Railways Income(10M INR)")
+g1
+ggsave("../../figures/IRIncome.png")
+```
+
+## Regression fit
+```{r}
+fit1<-lm(income~psgr_trains+goods_trains,data=irfa)
+summary(fit1)
+par(mfrow=c(2,2))
+plot(fit1)
+```
